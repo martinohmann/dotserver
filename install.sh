@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# list of files to install
+declare -a dotserver_files=(
+  .bashrc
+  .dircolors
+  .tmux
+  .tmux.conf
+  .vim
+  .vimrc
+)
+
 usage() {
   cat <<-EOS
 installs dotserver to user's home directory
@@ -9,6 +19,7 @@ usage: $(basename "$0") [options]
   -f|--force            Overwrite existing files without confirmation.
   -b|--backup           Backup existing files. Backups will be suffixed
                         with '.pre-dotserver'.
+  -d|--dryrun           Execute without actually installing files.
 EOS
 }
 
@@ -21,22 +32,27 @@ confirm_installation() {
 }
 
 install() {
-  [ $force -eq 1 ] || confirm_installation
+  [ $dryrun -eq 1 ] || [ $force -eq 1 ] || confirm_installation
 
-  for f in ${files[@]}; do
+  for f in ${dotserver_files[@]}; do
     if [ -e "$HOME/$f" ]; then
       if [ $backup -eq 1 ]; then
-        echo "backing up existing $f to $HOME/$f.pre-dotserver"
-        mv -f "$HOME/$f" "$HOME/$f.pre-dotserver"
+        echo "backing up $HOME/$f to $HOME/$f.pre-dotserver"
+        [ $dryrun -eq 1 ] || mv -f "$HOME/$f" "$HOME/$f.pre-dotserver"
       else
-        rm -rf "$HOME/$f"
+        echo "removing $HOME/$f"
+        [ $dryrun -eq 1 ] || rm -rf "$HOME/$f"
       fi
     fi
-    echo "installing $f to $HOME/$f"
-    ln -s "$dotserver/$f" "$HOME/$f"
+    echo "installing $dotserver/$f to $HOME/$f"
+    [ $dryrun -eq 1 ] || ln -s "$dotserver/$f" "$HOME/$f"
   done
 
-  echo "installation finished"
+  if [ $dryrun -eq 1 ]; then
+    echo "dryrun: nothing was installed"
+  else
+    echo "installation finished"
+  fi
 }
 
 parse_args() {
@@ -49,6 +65,8 @@ parse_args() {
         force=1 ;;
       -b|--backup)
         backup=1 ;;
+      -d|--dryrun)
+        dryrun=1 ;;
       *)
         echo "invalid argument: $1. use -h to get a list of all valid options." 1>&2
         exit 1 ;;
@@ -57,11 +75,9 @@ parse_args() {
   done
 }
 
-declare -a files
-
 backup=0
 dotserver="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-files=( .bashrc .vimrc .vim .tmux.conf .tmux )
+dryrun=0
 force=0
 
 parse_args "$@"

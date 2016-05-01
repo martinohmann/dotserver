@@ -3,9 +3,10 @@ dotserver
 This repository contains dotfiles for headless systems.
 
 Includes:
-- vim config
-- tmux config
+- dircolors
 - bash config
+- tmux config
+- vim config
 
 installation
 ------------
