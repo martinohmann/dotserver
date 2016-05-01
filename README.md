@@ -10,7 +10,7 @@ installation
 ------------
 
     git clone https://github.com/martinohmann/dotserver.git ~/.dotserver
-    ~/.dotserver/install.sh
+    ~/.dotserver/install.sh --backup
 
 
 updating
