@@ -1,0 +1,2 @@
+# exclude vim view history
+.vim/view
