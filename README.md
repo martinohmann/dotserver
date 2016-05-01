@@ -1,7 +1,8 @@
 dotserver
 =========
-This repository includes my dotfiles for headless systems.
+This repository contains dotfiles for headless systems.
 
+Includes:
 - vim config
 - tmux config
 - bash config
