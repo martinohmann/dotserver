@@ -13,27 +13,30 @@ EOS
 }
 
 confirm_installation() {
-  read -p "Do you want to install dotserver? Existing files will be overwritten. (y|N) " yn
+  read -p "Do you want to install dotserver? Existing files will be overwritten. [y|N] " yn
   case $yn in
     [Yy]) return ;;
-    *) exit ;;
+    *) echo "installation aborted"; exit ;;
   esac
 }
 
 install() {
-
   [ $force -eq 1 ] || confirm_installation
 
   for f in ${files[@]}; do
     if [ -e "$HOME/$f" ]; then
       if [ $backup -eq 1 ]; then
+        echo "backing up existing $f to $HOME/$f.pre-dotserver"
         mv -f "$HOME/$f" "$HOME/$f.pre-dotserver"
       else
         rm -rf "$HOME/$f"
       fi
     fi
+    echo "installing $f to $HOME/$f"
     ln -s "$dotserver/$f" "$HOME/$f"
   done
+
+  echo "installation finished"
 }
 
 parse_args() {
