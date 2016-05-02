@@ -52,9 +52,9 @@ install() {
     echo "dryrun: nothing was installed"
   else
     echo "initializing submodules"
-    pushd "$dotserver"
+    pushd "$dotserver" > /dev/null 2>&1
     git submodule update --init --recursive
-    popd
+    popd > /dev/null 2>&1
     echo "installation finished"
   fi
 }
