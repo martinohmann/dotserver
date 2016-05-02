@@ -53,18 +53,18 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 if [ $(id -u) -eq 0 ]; then
   PS1="${debian_chroot:+($debian_chroot)}\[\033[00;31m\]\u\
-  \[\033[00;37m\]@\h\[\033[00m\] \
-  \[\033[00;36m\]\w\[\033[00;32m\]\
-  \$(pwd_is_git_repo && \
-    echo -n \" \[\033[00;32m\]git:(\[\033[00;31m\]\$(git_branch_prompt)\" && \
-    echo -n \"\[\033[00;32m\])\")\$(venv_prompt) \[\033[00;37m\]# \[\033[00m\]"
+\[\033[00;37m\]@\h\[\033[00m\] \
+\[\033[00;36m\]\w\[\033[00;32m\]\
+\$(pwd_is_git_repo && \
+  echo -n \" \[\033[00;32m\]git:(\[\033[00;31m\]\$(git_branch_prompt)\" && \
+  echo -n \"\[\033[00;32m\])\")\$(venv_prompt) \[\033[00;37m\]# \[\033[00m\]"
 else
   PS1="${debian_chroot:+($debian_chroot)}\[\033[00;32m\]\u\
-  \[\033[00;37m\]@\h\[\033[00m\] \
-  \[\033[00;36m\]\w\[\033[00;32m\]\
-  \$(pwd_is_git_repo && \
-    echo -n \" \[\033[00;32m\]git:(\[\033[00;31m\]\$(git_branch_prompt)\" && \
-    echo -n \"\[\033[00;32m\])\")\$(venv_prompt) \[\033[00;37m\]% \[\033[00m\]"
+\[\033[00;37m\]@\h\[\033[00m\] \
+\[\033[00;36m\]\w\[\033[00;32m\]\
+\$(pwd_is_git_repo && \
+  echo -n \" \[\033[00;32m\]git:(\[\033[00;31m\]\$(git_branch_prompt)\" && \
+  echo -n \"\[\033[00;32m\])\")\$(venv_prompt) \[\033[00;37m\]% \[\033[00m\]"
 fi
 
 # unset GREP_OPTIONS since it is deprecated
