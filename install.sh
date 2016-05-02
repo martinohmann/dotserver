@@ -51,6 +51,10 @@ install() {
   if [ $dryrun -eq 1 ]; then
     echo "dryrun: nothing was installed"
   else
+    echo "initializing submodules"
+    pushd "$dotserver"
+    git submodule update --init --recursive
+    popd
     echo "installation finished"
   fi
 }
