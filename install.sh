@@ -20,6 +20,7 @@ usage: $(basename "$0") [options]
   -b|--backup           Backup existing files. Backups will be suffixed
                         with '.pre-dotserver'.
   -d|--dryrun           Execute without actually installing files.
+  -s|--symlink          Symlink files instead of copying.
 EOS
 }
 
@@ -45,7 +46,13 @@ install() {
       fi
     fi
     echo "installing $dotserver/$f to $HOME/$f"
-    [ $dryrun -eq 1 ] || ln -s "$dotserver/$f" "$HOME/$f"
+    if [ $dryrun -eq 0 ]; then
+      if [ $symlink -eq 1 ]; then
+        ln -s "$dotserver/$f" "$HOME/$f"
+      else
+        cp -r "$dotserver/$f" "$HOME/$f"
+      fi
+    fi
   done
 
   if [ $dryrun -eq 1 ]; then
@@ -71,6 +78,8 @@ parse_args() {
         backup=1 ;;
       -d|--dryrun)
         dryrun=1 ;;
+      -s|--symlink)
+        symlink=1 ;;
       *)
         echo "invalid argument: $1. use -h to get a list of all valid options." 1>&2
         exit 1 ;;
