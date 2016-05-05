@@ -92,6 +92,7 @@ backup=0
 dotserver="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 dryrun=0
 force=0
+symlink=0
 
 parse_args "$@"
 install
