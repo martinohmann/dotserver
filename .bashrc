@@ -27,22 +27,14 @@ fi
 #
 # prompt
 #
-git_branch_name() {
-  git symbolic-ref HEAD 2> /dev/null | cut -d"/" -f 3
-}
+git_prompt() {
+  local branch
 
-git_branch_prompt() {
-  local branch=$(git_branch_name)
-
-  if [ $branch ]; then
-    echo "${branch}"
-  else
-    echo "no_branch!"
+  if git rev-parse 2> /dev/null; then
+    branch=$(git symbolic-ref HEAD 2> /dev/null | cut -d"/" -f 3)
+    [ -z "$branch" ] && branch="no_branch!"
+    echo -ne " \033[00;32mgit:(\033[00;31m${branch}\033[00;32m)"
   fi
-}
-
-pwd_is_git_repo() {
-  git rev-parse 2> /dev/null
 }
 
 venv_prompt() {
@@ -51,20 +43,15 @@ venv_prompt() {
 
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
+# different prompts for root and normal user
 if [ $(id -u) -eq 0 ]; then
-  PS1="${debian_chroot:+($debian_chroot)}\[\033[00;31m\]\u\
-\[\033[00;37m\]@\h\[\033[00m\] \
-\[\033[00;36m\]\w\[\033[00;32m\]\
-\$(pwd_is_git_repo && \
-  echo -n \" \[\033[00;32m\]git:(\[\033[00;31m\]\$(git_branch_prompt)\" && \
-  echo -n \"\[\033[00;32m\])\")\$(venv_prompt) \[\033[00;37m\]# \[\033[00m\]"
+  PS1="${debian_chroot:+($debian_chroot)}\
+\[\033[00;31m\]\u\[\033[00;33m\]@\[\033[00;36m\]\h\[\033[00m\] \[\033[00;33m\]\w\
+\$(git_prompt)\$(venv_prompt) \[\033[00;37m\]# \[\033[00m\]"
 else
-  PS1="${debian_chroot:+($debian_chroot)}\[\033[00;32m\]\u\
-\[\033[00;37m\]@\h\[\033[00m\] \
-\[\033[00;36m\]\w\[\033[00;32m\]\
-\$(pwd_is_git_repo && \
-  echo -n \" \[\033[00;32m\]git:(\[\033[00;31m\]\$(git_branch_prompt)\" && \
-  echo -n \"\[\033[00;32m\])\")\$(venv_prompt) \[\033[00;37m\]% \[\033[00m\]"
+  PS1="${debian_chroot:+($debian_chroot)}\
+\[\033[00;32m\]\u\[\033[00;37m\]@\[\033[00;37m\]\h\[\033[00m\] \[\033[00;36m\]\w\
+\$(git_prompt)\$(venv_prompt) \[\033[00;37m\]% \[\033[00m\]"
 fi
 
 # unset GREP_OPTIONS since it is deprecated
@@ -122,12 +109,12 @@ ls_color() {
 }
 
 _fs() { #$1: name,  $2: search regexp, $3: file or directory
-  name=$1
-  grep_opts=-RIne
+  local name=$1
+  local grep_opts=-RIne
   [ "$name" = "fsi" ] && grep_opts=-RIine
   shift
   [ $# -lt 1 ] && { echo "usage: $name <regexp> [<directory or file>]"; return; }
-  dir=$2
+  local dir=$2
   [ -z "$dir" ] && dir=$(pwd)
 
   egrep $grep_opts "$1" "$dir" #2> /dev/null
