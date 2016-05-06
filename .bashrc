@@ -27,13 +27,18 @@ fi
 #
 # prompt
 #
+parse_git_dirty() {
+  local status=$(git status --ignore-submodules=dirty --porcelain 2> /dev/null | tail -n1)
+  [ -n "$status" ] &&  echo -ne " \033[00;33mx\033[00m"
+}
+
 git_prompt() {
   local branch
 
   if git rev-parse 2> /dev/null; then
     branch=$(git symbolic-ref HEAD 2> /dev/null | cut -d"/" -f 3)
     [ -z "$branch" ] && branch="no_branch!"
-    echo -ne " \033[00;32mgit:(\033[00;31m${branch}\033[00;32m)"
+    echo -ne " \033[00;32mgit:(\033[00;31m${branch}\033[00;32m)$(parse_git_dirty)"
   fi
 }
 
