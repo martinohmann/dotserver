@@ -35,6 +35,13 @@ confirm_installation() {
 install() {
   [ $dryrun -eq 1 ] || [ $force -eq 1 ] || confirm_installation
 
+  if [ $dryrun -eq 0 ]; then
+    echo "initializing submodules"
+    pushd "$dotserver" > /dev/null 2>&1
+    git submodule update --init --recursive
+    popd > /dev/null 2>&1
+  fi
+
   for f in ${dotserver_files[@]}; do
     if [ -e "$HOME/$f" ]; then
       if [ $backup -eq 1 ]; then
@@ -58,10 +65,6 @@ install() {
   if [ $dryrun -eq 1 ]; then
     echo "dryrun: nothing was installed"
   else
-    echo "initializing submodules"
-    pushd "$dotserver" > /dev/null 2>&1
-    git submodule update --init --recursive
-    popd > /dev/null 2>&1
     echo "installation finished"
   fi
 }
