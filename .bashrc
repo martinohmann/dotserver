@@ -127,12 +127,12 @@ _fs() { #$1: name,  $2: search regexp, $3: file or directory
 
 # find string in files recursively
 fs() { #$1: search regexp, $2: file or directory
-  _fs "$0" $@
+  _fs "$0" "$@"
 }
 
 # find string in files recursively (case insensitive)
 fsi() { #$1: search regexp, $2: file or directory
-  _fs "$0" $@
+  _fs "$0" "$@"
 }
 
 # Alias definitions.
