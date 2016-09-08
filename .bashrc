@@ -34,18 +34,8 @@ parse_git_dirty() {
   [ -n "$status" ] &&  echo -ne " \033[00;33mx\033[00m"
 }
 
-git_prompt() {
-  local branch
-
-  if git rev-parse 2> /dev/null; then
-    branch=$(git symbolic-ref HEAD 2> /dev/null | cut -d"/" -f 3)
-    [ -z "$branch" ] && branch="no_branch!"
-    echo -ne " \033[00;32mgit:(\033[00;31m${branch}\033[00;32m)$(parse_git_dirty)"
-  fi
-}
-
 venv_prompt() {
-  [ -n "$VIRTUAL_ENV" ] && echo -ne " \033[00;33mvenv:(\033[00;36m${VIRTUAL_ENV##*/}\033[00;33m)"
+  [ -n "$VIRTUAL_ENV" ] && echo -ne " venv:(${VIRTUAL_ENV##*/})"
 }
 
 export VIRTUAL_ENV_DISABLE_PROMPT=1
@@ -54,11 +44,11 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 if [ "$(id -u)" -eq 0 ]; then
   PS1="${debian_chroot:+($debian_chroot)}\
 \[\033[00;31m\]\u\[\033[00;33m\]@\[\033[00;36m\]\h\[\033[00m\] \[\033[00;33m\]\w\
-\$(git_prompt)\$(venv_prompt) \[\033[00;37m\]# \[\033[00m\]"
+\[\033[00;31m\]\$(__git_ps1 \" git:(%s)\")\[\033[00;33m\]\$(venv_prompt) \[\033[00;37m\]# \[\033[00m\]"
 else
   PS1="${debian_chroot:+($debian_chroot)}\
 \[\033[00;32m\]\u\[\033[00;37m\]@\[\033[00;37m\]\h\[\033[00m\] \[\033[00;36m\]\w\
-\$(git_prompt)\$(venv_prompt) \[\033[00;37m\]% \[\033[00m\]"
+\[\033[00;31m\]\$(__git_ps1 \" git:(%s)\")\[\033[00;33m\]\$(venv_prompt) \[\033[00;37m\]% \[\033[00m\]"
 fi
 
 # unset GREP_OPTIONS since it is deprecated
