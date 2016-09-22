@@ -144,7 +144,7 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 # setup ssh-agent
-eval "$(ssh-agent)"
+eval "$(ssh-agent)" > /dev/null 2>&1
 
 # set editor
 export EDITOR=vim
