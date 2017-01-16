@@ -144,7 +144,12 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 # setup ssh-agent
-eval "$(ssh-agent)" > /dev/null 2>&1
+if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+  eval "$(ssh-agent)" > /dev/null 2>&1
+  ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+fi
+export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+ssh-add -l > /dev/null || ssh-add > /dev/null
 
 # set editor
 export EDITOR=vim
